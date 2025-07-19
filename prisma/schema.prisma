@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Specialty {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  hospitals   HospitalSpecialty[]
+}
+
+model HospitalSpecialty {
+  id          Int      @id @default(autoincrement())
+  hospital    Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId  Int
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
+  specialtyId Int
+  @@unique([hospitalId, specialtyId])
+}
+
+model Veterinarian {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  license     String?
+  profileImage String?
+  hospitals   HospitalVeterinarian[]
+}
+
+model HospitalVeterinarian {
+  id            Int          @id @default(autoincrement())
+  hospital      Hospital     @relation(fields: [hospitalId], references: [id])
+  hospitalId    Int
+  veterinarian  Veterinarian @relation(fields: [veterinarianId], references: [id])
+  veterinarianId Int
+  @@unique([hospitalId, veterinarianId])
+}
+
+model Hospital {
+  id           Int      @id @default(autoincrement())
+  name         String
+  address      String
+  phone        String?
+  openHours    String?
+  description  String?
+  imageUrls    String?  // 여러 이미지 URL, 콤마 구분
+  faq          String?  // FAQ, 콤마 구분
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  reservations Reservation[]
+  reviews      Review[]
+  specialties  HospitalSpecialty[]
+  veterinarians HospitalVeterinarian[]
+  owner        User?    @relation("HospitalOwner", fields: [ownerId], references: [id])
+  ownerId      Int?
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("user") // user, admin, hospitalAdmin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reservations Reservation[]
+  reviews      Review[]
+  posts        CommunityPost[]
+  comments     CommunityComment[]
+  likes        CommunityLike[]
+  reports      CommunityReport[]
+  hospitals    Hospital[] @relation("HospitalOwner")
+  auditLogs    AuditLog[] @relation("AuditUser")
+}
+
+model Reservation {
+  id         Int      @id @default(autoincrement())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId Int
+  reservedAt DateTime
+  status     String   @default("pending") // pending, confirmed, cancelled, completed
+  memo       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId Int
+  rating     Int      // 1~5
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CommunityPost {
+  id         Int      @id @default(autoincrement())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int
+  title      String
+  content    String
+  category   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  comments   CommunityComment[]
+  likes      CommunityLike[]
+  reports    CommunityReport[]
+}
+
+model CommunityComment {
+  id              Int              @id @default(autoincrement())
+  post            CommunityPost    @relation(fields: [postId], references: [id])
+  postId          Int
+  user            User             @relation(fields: [userId], references: [id])
+  userId          Int
+  content         String
+  parentComment   CommunityComment? @relation("ParentChild", fields: [parentCommentId], references: [id])
+  parentCommentId Int?
+  childComments   CommunityComment[] @relation("ParentChild")
+  reports         CommunityReport[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model CommunityLike {
+  id        Int           @id @default(autoincrement())
+  post      CommunityPost @relation(fields: [postId], references: [id])
+  postId    Int
+  user      User          @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime      @default(now())
+  @@unique([postId, userId])
+}
+
+model CommunityReport {
+  id         Int      @id @default(autoincrement())
+  post       CommunityPost? @relation(fields: [postId], references: [id])
+  postId     Int?
+  comment    CommunityComment? @relation(fields: [commentId], references: [id])
+  commentId  Int?
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int
+  reason     String
+  status     String  @default("pending") // pending, resolved, rejected
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// 권한 변경/승인/회수 등 감사 로그
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  user      User?    @relation("AuditUser", fields: [userId], references: [id])
+  userId    Int?
+  action    String   // ex: 'role_grant', 'role_revoke', 'hospital_assign', ...
+  targetId  Int?     // ex: 병원 id, 유저 id 등
+  targetType String? // ex: 'user', 'hospital'
+  detail    String?  // ex: 변경 내용
+  createdAt DateTime @default(now())
+}
