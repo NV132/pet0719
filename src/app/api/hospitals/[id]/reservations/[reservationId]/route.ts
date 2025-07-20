@@ -5,7 +5,6 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PATCH(req, context) {
   const hospitalId = Number(context.params.id);
   const reservationId = Number(context.params.reservationId);
