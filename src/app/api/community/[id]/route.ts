@@ -1,12 +1,12 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "@/lib/auth";
 import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: any, { params }: any) {
-  const postId = Number(params.id);
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const postId = Number(context.params.id);
   if (!postId) {
     return NextResponse.json({ error: "게시글 ID가 필요합니다." }, { status: 400 });
   }
@@ -20,8 +20,8 @@ export async function GET(req: any, { params }: any) {
   return NextResponse.json({ post });
 }
 
-export async function PUT(req: any, { params }: any) {
-  const postId = Number(params.id);
+export async function PUT(req: Request, context: { params: { id: string } }) {
+  const postId = Number(context.params.id);
   const auth = req.headers.get("authorization");
   const user = verifyToken(auth || undefined) as JwtPayload | null;
   if (!user || !user.id) {
@@ -45,8 +45,8 @@ export async function PUT(req: any, { params }: any) {
   return NextResponse.json({ post: updated });
 }
 
-export async function DELETE(req: any, { params }: any) {
-  const postId = Number(params.id);
+export async function DELETE(req: Request, context: { params: { id: string } }) {
+  const postId = Number(context.params.id);
   const auth = req.headers.get("authorization");
   const user = verifyToken(auth || undefined) as JwtPayload | null;
   if (!user || !user.id) {
