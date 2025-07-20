@@ -3,14 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AdminTabNav from "@/components/AdminTabNav";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// User 인터페이스는 아래에서 한 번만 선언합니다.
 interface AuditLog {
   id: number;
   user?: { id: number; name: string; email: string };
@@ -42,15 +35,8 @@ function downloadCSV(rows: Record<string, unknown>[], columns: string[], filenam
 export default function AdminUserManagementPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  interface User {
-    id: number;
-    name: string;
-    email: string;
-    status: string;
-    role: string;
-    createdAt: string;
-  }
-  const [users, setUsers] = useState<User[]>([]);
+  // 중복 User 인터페이스 선언 제거
+  const [users, setUsers] = useState<any[]>([]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,10 +50,10 @@ export default function AdminUserManagementPage() {
     joinedFrom: searchParams.get("joinedFrom") || "",
     joinedTo: searchParams.get("joinedTo") || "",
   });
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [modalTab, setModalTab] = useState("info");
   // 계정 정지/탈퇴용 비밀번호 입력 모달 상태
-  const [pwModal, setPwModal] = useState<{ type: "정지" | "탈퇴" | null, user: User | null }>({ type: null, user: null });
+  const [pwModal, setPwModal] = useState<{ type: "정지" | "탈퇴" | null, user: any | null }>({ type: null, user: null });
   const [pwInput, setPwInput] = useState("");
   const [pwError, setPwError] = useState("");
 
@@ -140,7 +126,7 @@ export default function AdminUserManagementPage() {
   });
 
   // 계정 정지/탈퇴 처리 (비밀번호 검증 mock)
-  const handleAccountAction = (type: "정지" | "탈퇴", user: User) => {
+  const handleAccountAction = (type: "정지" | "탈퇴", user: any) => {
     if (!window.confirm(`정말 ${type} 처리하시겠습니까?`)) return;
     setPwModal({ type, user });
     setPwInput("");

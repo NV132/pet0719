@@ -19,8 +19,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   // 데이터 가공: specialties, veterinarians, imageUrls, faq
   const result = {
     ...hospital,
-    specialties: hospital.specialties.map((s: { specialty: unknown }) => s.specialty),
-    veterinarians: hospital.veterinarians.map((v: { veterinarian: unknown }) => v.veterinarian),
+    specialties: hospital.specialties.map((s: { specialty: { id: number; name: string } }) => s.specialty),
+    veterinarians: hospital.veterinarians.map((v: { veterinarian: { id: number; name: string; license: string | null; profileImage: string | null } }) => v.veterinarian),
     imageUrls: hospital.imageUrls ? hospital.imageUrls.split(",") : [],
     faq: hospital.faq ? hospital.faq.split("/").map((f: string) => f.split(",")) : [],
   };
@@ -62,8 +62,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   if (!hospitalDetail) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const result = {
     ...hospitalDetail,
-    specialties: hospitalDetail.specialties.map((s: { specialty: unknown }) => s.specialty),
-    veterinarians: hospitalDetail.veterinarians.map((v: { veterinarian: unknown }) => v.veterinarian),
+    specialties: hospitalDetail.specialties.map((s: { specialty: { id: number; name: string } }) => s.specialty),
+    veterinarians: hospitalDetail.veterinarians.map((v: { veterinarian: { id: number; name: string; license: string | null; profileImage: string | null } }) => v.veterinarian),
     imageUrls: hospitalDetail.imageUrls ? hospitalDetail.imageUrls.split(",") : [],
     faq: hospitalDetail.faq ? hospitalDetail.faq.split("/").map((f: string) => f.split(",")) : [],
   };

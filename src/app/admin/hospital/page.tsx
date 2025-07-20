@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface Hospital {
@@ -20,7 +20,7 @@ export default function AdminHospitalPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchHospitals = async () => {
+  const fetchHospitals = useCallback(async () => {
     setLoading(true);
     setError("");
     const params = new URLSearchParams();
@@ -35,9 +35,9 @@ export default function AdminHospitalPage() {
       setError("병원 목록을 불러오지 못했습니다.");
     }
     setLoading(false);
-  };
+  }, [q, specialty]);
 
-  useEffect(() => { fetchHospitals(); }, []);
+  useEffect(() => { fetchHospitals(); }, [fetchHospitals]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

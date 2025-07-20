@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect, useTransition, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -121,7 +122,7 @@ export default function HospitalListPage() {
             ref={i === hospitals.length - 1 ? ref : undefined}
           >
             {h.imageUrls && h.imageUrls[0] && (
-              <img src={h.imageUrls[0]} alt={h.name} className="w-16 h-16 rounded object-cover border" />
+              <Image src={h.imageUrls[0]} alt={h.name} width={64} height={64} className="w-16 h-16 rounded object-cover border" />
             )}
             <div>
               <div className="text-xl font-semibold text-[#36A2EB]">{h.name}</div>

@@ -62,7 +62,7 @@ export default function HospitalAdminDashboard() {
     setLoading(true);
     fetch("/api/hospitals?mine=1", { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
-      .then(data => { setHospitals(data.hospitals || []); setLoading(false); })
+      .then((data: { hospitals: Hospital[] }) => { setHospitals(data.hospitals || []); setLoading(false); })
       .catch(() => { setError("병원 목록을 불러오지 못했습니다."); setLoading(false); });
   }, [router]);
 
@@ -75,7 +75,15 @@ export default function HospitalAdminDashboard() {
       fetch(`/api/hospitals/${selected.id}/reviews`, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.json()),
       fetch(`/api/hospitals/${selected.id}/reservations`, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.json()),
       fetch(`/api/hospitals/${selected.id}/stats`, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.json()),
-    ]).then(([r, rv, st]) => {
+    ]).then(([
+      r,
+      rv,
+      st
+    ]: [
+      { reviews: Review[] },
+      { reservations: Reservation[] },
+      { stats: Stats }
+    ]) => {
       setReviews(r.reviews || []);
       setReservations(rv.reservations || []);
       setStats(st.stats || null);

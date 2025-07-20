@@ -52,11 +52,12 @@ function useFocusTrap(
     document.body.style.overflow = "hidden";
     // 포커스 첫번째로 이동
     setTimeout(() => { first?.focus(); }, 0);
+    const restoreEl = restoreFocusRef?.current;
     return () => {
       node.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = prevOverflow;
       // 모달 닫힘 후 포커스 복원
-      if (restoreFocusRef?.current) restoreFocusRef.current.focus();
+      if (restoreEl) restoreEl.focus();
       else prevActive?.focus();
     };
   }, [isOpen, modalRef, onClose, restoreFocusRef]);
@@ -346,13 +347,22 @@ function EditModal({ post, onClose, onSuccess }: { post: Post; onClose: () => vo
   );
 }
 
+// 댓글/대댓글 타입
+interface Comment {
+  id: number;
+  user: { id: number; name: string };
+  content: string;
+  createdAt: string;
+  childComments?: Comment[];
+  userId?: number;
+}
 // 댓글/대댓글 컴포넌트
 function CommentList({ postId, userId }: { postId: number; userId: number | null }) {
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [content, setContent] = useState("");
-  const [parentId, setParentId] = useState<number | null>(null); // 대댓글 작성용
+  // parentId, setParentId 미사용이므로 삭제
   const [replyContent, setReplyContent] = useState<{ [key: number]: string }>({});
   const [editId, setEditId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
@@ -423,7 +433,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
       {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
       {loading ? <div className="text-gray-400">불러오는 중...</div> : (
         <ul className="divide-y divide-gray-100">
-          {comments.map((c: { id: number; user: { id: number; name: string }; content: string; createdAt: string; childComments?: any[] }) => (
+          {comments.map((c: Comment) => (
             <li key={c.id} className="py-2">
               <div className="flex gap-2 items-center">
                 <span className="font-semibold text-[#36A2EB]">{c.user.name}</span>
@@ -448,7 +458,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
               )}
               {/* 대댓글 */}
               <div className="ml-4 mt-1">
-                {c.childComments?.map((r: { id: number; user?: { id: number; name: string }; createdAt: string; content: string; userId?: number }) => (
+                {c.childComments?.map((r: Comment) => (
                   <div key={r.id} className="mb-1">
                     <span className="font-semibold text-[#4BC0C0]">{r.user?.name || "익명"}</span>
                     <span className="text-xs text-gray-400 ml-1">{new Date(r.createdAt).toLocaleString()}</span>

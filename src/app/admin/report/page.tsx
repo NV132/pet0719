@@ -1,37 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface Report {
   id: number;
-  postId?: number;
-  commentId?: number;
-  post?: { id: number; title: string };
-  comment?: { id: number; content: string };
-  user?: { id: number; name: string };
+  type: string;
+  targetId: number;
   reason: string;
   status: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
+  user: { id: number; name: string };
+  postId?: number;
+  post?: { id: number; title: string };
+  comment?: { id: number; content: string };
 }
 
 const STATUS = ["pending", "resolved", "rejected"];
 
 export default function AdminReportPage() {
   const router = useRouter();
-  interface Report {
-    id: number;
-    type: string;
-    targetId: number;
-    reason: string;
-    status: string;
-    createdAt: string;
-    updatedAt?: string;
-    user: { id: number; name: string };
-    postId?: number;
-    post?: { id: number; title: string };
-    comment?: { id: number; content: string };
-  }
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -50,7 +38,7 @@ export default function AdminReportPage() {
   }, [router]);
 
   // 신고 목록 fetch
-  const fetchReports = () => {
+  const fetchReports = useCallback(() => {
     setLoading(true);
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     const params = new URLSearchParams();
@@ -63,8 +51,8 @@ export default function AdminReportPage() {
       .then(res => res.json())
       .then((data: { reports: Report[] }) => { setReports(data.reports || []); setLoading(false); })
       .catch(() => setLoading(false));
-  };
-  useEffect(() => { fetchReports(); }, [status, type]);
+  }, [status, type, keyword]);
+  useEffect(() => { fetchReports(); }, [fetchReports]);
 
   // 상세 fetch
   const fetchDetail = (id: number) => {

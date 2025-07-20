@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import AdminTabNav from "@/components/AdminTabNav";
 
@@ -14,13 +14,13 @@ interface StatCard {
 
 export default function AdminDashboard() {
   // 실제 데이터는 API 연동 필요. MVP용 mock 데이터 사용
-  const [stats, setStats] = useState<StatCard[]>([
+  const [stats] = useState<StatCard[]>([
     { title: "총 회원수", value: 1, sub: "+0명", icon: <span className="text-2xl">👤</span>, color: "bg-blue-50", href: "/admin/user-management" },
     { title: "등록 병원", value: 2, sub: "승인완료", icon: <span className="text-2xl">🏥</span>, color: "bg-green-50", href: "/admin/hospital" },
     { title: "총 예약", value: 2, sub: "1건 대기", icon: <span className="text-2xl">📅</span>, color: "bg-yellow-50", href: "/admin/hospital" },
     { title: "AI 진단", value: 1847, sub: "오늘 152회", icon: <span className="text-2xl">🤖</span>, color: "bg-purple-50" },
   ]);
-  const [recent, setRecent] = useState([
+  const [recent] = useState([
     { type: "회원가입", user: "박영희", time: "5분 전", icon: "👤" },
     { type: "병원 승인 요청", user: "사랑동물병원", time: "10분 전", icon: "🏥" },
     { type: "새 예약", user: "김철수 → 우리동물병원", time: "15분 전", icon: "📅" },

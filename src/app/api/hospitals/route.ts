@@ -67,8 +67,8 @@ export async function GET(req: Request) {
   // 응답 데이터 가공: specialties, veterinarians, imageUrls, faq 파싱
   const result = hospitals.map((h) => ({
     ...h,
-    specialties: (h.specialties as { specialty: unknown }[]).map((s) => s.specialty),
-    veterinarians: (h.veterinarians as { veterinarian: unknown }[]).map((v) => v.veterinarian),
+    specialties: (h.specialties as { specialty: { id: number; name: string } }[]).map((s) => s.specialty),
+    veterinarians: (h.veterinarians as { veterinarian: { id: number; name: string; license: string | null; profileImage: string | null } }[]).map((v) => v.veterinarian),
     imageUrls: h.imageUrls ? (h.imageUrls as string).split(",") : [],
     faq: h.faq ? (h.faq as string).split("/").map((f: string) => f.split(",")) : [], // [[Q,A], ...]
   }));

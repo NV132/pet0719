@@ -31,8 +31,8 @@ interface HospitalForm {
 
 export default function AdminHospitalDetailPage() {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
+  const params = useParams() as { id?: string };
+  const id = params?.id ?? "";
   const [hospital, setHospital] = useState<Hospital|null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -44,8 +44,8 @@ export default function AdminHospitalDetailPage() {
     if (!id) return;
     setLoading(true);
     fetch(`/api/hospitals/${id}`)
-      .then(res => res.json())
-      .then((data: { hospital: Hospital }) => {
+      .then(res => res.json() as Promise<{ hospital: Hospital }>)
+      .then((data) => {
         setHospital(data.hospital);
         setForm({
           name: data.hospital.name,
