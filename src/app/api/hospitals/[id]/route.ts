@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "@/lib/auth";
@@ -7,7 +5,6 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(req, context) {
   const hospital = await prisma.hospital.findUnique({
     where: { id: Number(context.params.id) },
@@ -30,7 +27,6 @@ export async function GET(req, context) {
   return NextResponse.json({ hospital: result });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PATCH(req, context) {
   const id = Number(context.params.id);
   const data = await req.json();
@@ -74,7 +70,6 @@ export async function PATCH(req, context) {
   return NextResponse.json({ hospital: result });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(req, context) {
   const id = Number(context.params.id);
   // 인증 및 권한 체크

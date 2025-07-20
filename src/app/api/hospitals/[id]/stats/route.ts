@@ -5,8 +5,9 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const hospitalId = Number(params.id);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(req, context) {
+  const hospitalId = Number(context.params.id);
   if (!hospitalId) {
     return NextResponse.json({ error: "병원 ID가 필요합니다." }, { status: 400 });
   }
