@@ -10,7 +10,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   const postId = Number(params.id);
   const { searchParams } = new URL(req.url);
   const parentId = searchParams.get("parentId");
-  const where: any = { postId };
+  const where: Record<string, unknown> = { postId };
   if (parentId) where.parentCommentId = Number(parentId);
   else where.parentCommentId = null;
   const comments = await prisma.communityComment.findMany({

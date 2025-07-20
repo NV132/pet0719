@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const category = searchParams.get("category") || undefined;
   const limit = parseInt(searchParams.get("limit") || "20", 10);
   const offset = parseInt(searchParams.get("offset") || "0", 10);
-  const where: any = {};
+  const where: Record<string, unknown> = {};
   if (category) where.category = category;
   const posts = await prisma.communityPost.findMany({
     where,

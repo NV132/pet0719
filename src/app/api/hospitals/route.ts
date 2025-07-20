@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   const mine = searchParams.get("mine");
 
   // where 조건 생성
-  const where: any = {};
+  const where: Record<string, unknown> = {};
   if (q) {
     where.OR = [
       { name: { contains: q, mode: "insensitive" } },
@@ -65,10 +65,10 @@ export async function GET(req: Request) {
   ]);
 
   // 응답 데이터 가공: specialties, veterinarians, imageUrls, faq 파싱
-  const result = hospitals.map((h: any) => ({
+  const result = hospitals.map((h) => ({
     ...h,
-    specialties: (h.specialties as any[]).map((s: any) => s.specialty),
-    veterinarians: (h.veterinarians as any[]).map((v: any) => v.veterinarian),
+    specialties: (h.specialties as { specialty: unknown }[]).map((s) => s.specialty),
+    veterinarians: (h.veterinarians as { veterinarian: unknown }[]).map((v) => v.veterinarian),
     imageUrls: h.imageUrls ? (h.imageUrls as string).split(",") : [],
     faq: h.faq ? (h.faq as string).split("/").map((f: string) => f.split(",")) : [], // [[Q,A], ...]
   }));

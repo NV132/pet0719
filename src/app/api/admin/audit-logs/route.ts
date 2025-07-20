@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
-  let where: any = {};
+  let where: Record<string, unknown> = {};
   if (user.role === "admin") {
     // 전체 감사 로그
   } else if (user.role === "hospitalAdmin") {

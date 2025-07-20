@@ -2,16 +2,29 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface Report {
+  id: number;
+  postId?: number;
+  commentId?: number;
+  post?: { id: number; title: string };
+  comment?: { id: number; content: string };
+  user?: { id: number; name: string };
+  reason: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const STATUS = ["pending", "resolved", "rejected"];
 
 export default function AdminReportPage() {
   const router = useRouter();
-  const [reports, setReports] = useState<any[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [type, setType] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [selected, setSelected] = useState<any>(null);
+  const [selected, setSelected] = useState<Report | null>(null);
   const [patching, setPatching] = useState(false);
   const [error, setError] = useState("");
 

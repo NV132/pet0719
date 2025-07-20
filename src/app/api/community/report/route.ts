@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   const status = searchParams.get("status") || undefined;
   const type = searchParams.get("type"); // post/comment
   const keyword = searchParams.get("keyword") || undefined;
-  const where: any = {};
+  const where: Record<string, unknown> = {};
   if (status) where.status = status;
   if (type === "post") where.postId = { not: null };
   if (type === "comment") where.commentId = { not: null };

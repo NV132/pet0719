@@ -24,7 +24,7 @@ export default function AdminHospitalDetailPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [edit, setEdit] = useState(false);
-  const [form, setForm] = useState<any>({});
+  const [form, setForm] = useState<Partial<Hospital> & { [key: string]: any }>({});
   const [admins, setAdmins] = useState<{ id: number; name: string; email: string }[]>([]);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function AdminHospitalDetailPage() {
     fetch("/api/admin/users", { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
-        setAdmins((data.users || []).filter((u: any) => u.role === "hospitalAdmin"));
+        setAdmins((data.users || []).filter((u: { id: number; name: string; email: string; role: string }) => u.role === "hospitalAdmin"));
       });
   }, []);
 

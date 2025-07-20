@@ -52,7 +52,7 @@ export default function HospitalAddPage() {
     fetch("/api/admin/users", { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
-        setAdmins((data.users || []).filter((u: any) => u.role === "hospitalAdmin"));
+        setAdmins((data.users || []).filter((u: { id: number; name: string; email: string; role: string }) => u.role === "hospitalAdmin"));
       });
   }, []);
 

@@ -21,7 +21,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status") || undefined;
-  const where: any = { hospitalId };
+  const where: Record<string, unknown> = { hospitalId };
   if (status) where.status = status;
   const reservations = await prisma.reservation.findMany({
     where,

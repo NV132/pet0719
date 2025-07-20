@@ -12,15 +12,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       specialties: { include: { specialty: true } },
       veterinarians: { include: { veterinarian: true } },
     },
-  }) as any;
+  });
   if (!hospital) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   // 데이터 가공: specialties, veterinarians, imageUrls, faq
   const result = {
     ...hospital,
-    specialties: hospital.specialties.map((s: any) => s.specialty),
-    veterinarians: hospital.veterinarians.map((v: any) => v.veterinarian),
+    specialties: hospital.specialties.map((s: { specialty: unknown }) => s.specialty),
+    veterinarians: hospital.veterinarians.map((v: { veterinarian: unknown }) => v.veterinarian),
     imageUrls: hospital.imageUrls ? hospital.imageUrls.split(",") : [],
     faq: hospital.faq ? hospital.faq.split("/").map((f: string) => f.split(",")) : [],
   };
@@ -42,7 +42,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ error: "본인 병원만 수정할 수 있습니다." }, { status: 403 });
   }
   // ownerId, name, address 등 전달된 값만 업데이트
-  const updateData: any = {};
+  const updateData: Record<string, unknown> = {};
   if (data.name) updateData.name = data.name;
   if (data.address) updateData.address = data.address;
   if (data.phone !== undefined) updateData.phone = data.phone;
@@ -62,8 +62,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   if (!hospitalDetail) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const result = {
     ...hospitalDetail,
-    specialties: hospitalDetail.specialties.map((s: any) => s.specialty),
-    veterinarians: hospitalDetail.veterinarians.map((v: any) => v.veterinarian),
+    specialties: hospitalDetail.specialties.map((s: { specialty: unknown }) => s.specialty),
+    veterinarians: hospitalDetail.veterinarians.map((v: { veterinarian: unknown }) => v.veterinarian),
     imageUrls: hospitalDetail.imageUrls ? hospitalDetail.imageUrls.split(",") : [],
     faq: hospitalDetail.faq ? hospitalDetail.faq.split("/").map((f: string) => f.split(",")) : [],
   };
