@@ -5,8 +5,8 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const postId = Number(params.id);
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const postId = Number(context.params.id);
   if (!postId) {
     return NextResponse.json({ error: "게시글 ID가 필요합니다." }, { status: 400 });
   }
