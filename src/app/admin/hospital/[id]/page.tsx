@@ -16,6 +16,19 @@ interface Hospital {
   faq?: string[][];
 }
 
+interface HospitalForm {
+  name?: string;
+  address?: string;
+  phone?: string;
+  openHours?: string;
+  imageUrls?: string;
+  specialties?: string;
+  veterinarians?: string;
+  faq?: string;
+  ownerId?: string;
+  [key: string]: string | undefined;
+}
+
 export default function AdminHospitalDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -24,7 +37,7 @@ export default function AdminHospitalDetailPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [edit, setEdit] = useState(false);
-  const [form, setForm] = useState<Partial<Hospital> & { [key: string]: unknown }>({});
+  const [form, setForm] = useState<HospitalForm>({});
   const [admins, setAdmins] = useState<{ id: number; name: string; email: string }[]>([]);
 
   useEffect(() => {
@@ -32,7 +45,7 @@ export default function AdminHospitalDetailPage() {
     setLoading(true);
     fetch(`/api/hospitals/${id}`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: { hospital: Hospital }) => {
         setHospital(data.hospital);
         setForm({
           name: data.hospital.name,
@@ -54,8 +67,8 @@ export default function AdminHospitalDetailPage() {
     if (!token) return;
     fetch("/api/admin/users", { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
-      .then(data => {
-        setAdmins((data.users || []).filter((u: { id: number; name: string; email: string; role: string }) => u.role === "hospitalAdmin"));
+      .then((data: { users: { id: number; name: string; email: string; role: string }[] }) => {
+        setAdmins((data.users || []).filter((u) => u.role === "hospitalAdmin"));
       });
   }, []);
 
@@ -130,9 +143,9 @@ export default function AdminHospitalDetailPage() {
             <input name="phone" value={form.phone} onChange={handleChange} className="input" placeholder="전화번호" />
             <input name="openHours" value={form.openHours} onChange={handleChange} className="input" placeholder="운영 시간" />
             <input name="imageUrls" value={form.imageUrls} onChange={handleChange} className="input" placeholder="이미지 URL(콤마로 구분)" />
-            <input name="specialties" value={form.specialties} onChange={handleChange} className="input" placeholder="진료과목(콤마로 구분)" />
-            <input name="veterinarians" value={form.veterinarians} onChange={handleChange} className="input" placeholder="수의사(콤마로 구분)" />
-            <input name="faq" value={form.faq} onChange={handleChange} className="input" placeholder="FAQ(질문,답/질문,답 ...)" />
+            <input name="specialties" value={form.specialties || ""} onChange={handleChange} className="input" placeholder="진료과목(콤마로 구분)" />
+            <input name="veterinarians" value={form.veterinarians || ""} onChange={handleChange} className="input" placeholder="수의사(콤마로 구분)" />
+            <input name="faq" value={form.faq || ""} onChange={handleChange} className="input" placeholder="FAQ(질문,답/질문,답 ...)" />
             <select name="ownerId" value={form.ownerId || ""} onChange={e => setForm({ ...form, ownerId: e.target.value })} className="input" required aria-label="병원 관리자 선택">
               <option value="">병원 관리자(업체) 선택*</option>
               {admins.map(a => (

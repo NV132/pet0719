@@ -51,9 +51,7 @@ export default function HospitalAddPage() {
     if (!token) return;
     fetch("/api/admin/users", { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
-      .then(data => {
-        setAdmins((data.users || []).filter((u: { id: number; name: string; email: string; role: string }) => u.role === "hospitalAdmin"));
-      });
+      .then((data: { users: { id: number; name: string; email: string; role: string }[] }) => setAdmins((data.users || []).filter((u) => u.role === "hospitalAdmin")));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

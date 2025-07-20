@@ -14,7 +14,12 @@ interface Post {
 const categories = ["전체", "Q&A", "자유", "정보", "후기"];
 
 // 모달 포커스 트랩 유틸
-function useFocusTrap(modalRef: React.RefObject<HTMLDivElement>, isOpen: boolean, onClose: () => void, restoreFocusRef?: React.RefObject<HTMLElement>) {
+function useFocusTrap(
+  modalRef: React.RefObject<HTMLDivElement | null>, // 타입 수정
+  isOpen: boolean,
+  onClose: () => void,
+  restoreFocusRef?: React.RefObject<HTMLElement | null>
+) {
   useEffect(() => {
     if (!isOpen || !modalRef.current) return;
     const node = modalRef.current;
@@ -434,7 +439,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
               </div>
               {editId === c.id ? (
                 <div className="flex gap-2 mt-1">
-                  <input value={editContent} onChange={e => setEditContent(e.target.value)} className="input flex-1" />
+                  <input value={editContent} onChange={e => setEditContent(e.target.value)} className="input flex-1" placeholder="수정할 내용을 입력하세요" aria-label="댓글 수정 입력" />
                   <button className="px-2 py-1 rounded bg-[#36A2EB] text-white text-xs" onClick={() => handleEdit(c.id)}>저장</button>
                   <button className="px-2 py-1 rounded bg-gray-200 text-xs" onClick={() => setEditId(null)}>취소</button>
                 </div>
@@ -457,7 +462,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
                     <button className="text-xs text-[#FF4D4F] ml-2" onClick={() => setReportCommentId(r.id)} aria-label="대댓글 신고">신고</button>
                     {editId === r.id ? (
                       <div className="flex gap-2 mt-1">
-                        <input value={editContent} onChange={e => setEditContent(e.target.value)} className="input flex-1" />
+                        <input value={editContent} onChange={e => setEditContent(e.target.value)} className="input flex-1" placeholder="수정할 내용을 입력하세요" aria-label="대댓글 수정 입력" />
                         <button className="px-2 py-1 rounded bg-[#36A2EB] text-white text-xs" onClick={() => handleEdit(r.id)}>저장</button>
                         <button className="px-2 py-1 rounded bg-gray-200 text-xs" onClick={() => setEditId(null)}>취소</button>
                       </div>

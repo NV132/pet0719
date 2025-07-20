@@ -42,6 +42,14 @@ function downloadCSV(rows: Record<string, unknown>[], columns: string[], filenam
 export default function AdminUserManagementPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  interface User {
+    id: number;
+    name: string;
+    email: string;
+    status: string;
+    role: string;
+    createdAt: string;
+  }
   const [users, setUsers] = useState<User[]>([]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(false);

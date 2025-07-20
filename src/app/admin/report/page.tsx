@@ -19,6 +19,19 @@ const STATUS = ["pending", "resolved", "rejected"];
 
 export default function AdminReportPage() {
   const router = useRouter();
+  interface Report {
+    id: number;
+    type: string;
+    targetId: number;
+    reason: string;
+    status: string;
+    createdAt: string;
+    updatedAt?: string;
+    user: { id: number; name: string };
+    postId?: number;
+    post?: { id: number; title: string };
+    comment?: { id: number; content: string };
+  }
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -48,7 +61,7 @@ export default function AdminReportPage() {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
       .then(res => res.json())
-      .then(data => { setReports(data.reports || []); setLoading(false); })
+      .then((data: { reports: Report[] }) => { setReports(data.reports || []); setLoading(false); })
       .catch(() => setLoading(false));
   };
   useEffect(() => { fetchReports(); }, [status, type]);
@@ -141,7 +154,7 @@ export default function AdminReportPage() {
               <div className="mb-2"><b>사유:</b> {selected.reason}</div>
               <div className="mb-2"><b>상태:</b> {selected.status}</div>
               <div className="mb-2"><b>신고일:</b> {new Date(selected.createdAt).toLocaleString()}</div>
-              <div className="mb-2"><b>처리일:</b> {selected.updatedAt !== selected.createdAt ? new Date(selected.updatedAt).toLocaleString() : "-"}</div>
+              <div className="mb-2"><b>처리일:</b> {typeof selected.updatedAt === 'string' ? new Date(selected.updatedAt).toLocaleString() : '-'}</div>
               <div className="flex gap-2 mt-4">
                 {STATUS.filter(s => s !== selected.status).map(s => (
                   <button key={s} className="px-4 py-2 rounded bg-[#4BC0C0] text-white font-semibold" disabled={patching} onClick={() => handleStatus(selected.id, s)}>{s}</button>
