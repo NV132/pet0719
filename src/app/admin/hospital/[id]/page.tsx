@@ -24,7 +24,7 @@ export default function AdminHospitalDetailPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [edit, setEdit] = useState(false);
-  const [form, setForm] = useState<Partial<Hospital> & { [key: string]: any }>({});
+  const [form, setForm] = useState<Partial<Hospital> & { [key: string]: unknown }>({});
   const [admins, setAdmins] = useState<{ id: number; name: string; email: string }[]>([]);
 
   useEffect(() => {

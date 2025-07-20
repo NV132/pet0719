@@ -45,7 +45,14 @@ export default function HospitalAdminDashboard() {
   const [tab, setTab] = useState<'info'|'reviews'|'reservations'|'stats'>('info');
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  interface Stats {
+    reservationCount: number;
+    reviewCount: number;
+    avgRating: number;
+    monthlyReservations: { month: string; count: number }[];
+    monthlyReviews: { month: string; count: number; avgRating: number }[];
+  }
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -167,16 +174,16 @@ export default function HospitalAdminDashboard() {
                     <div className="mb-8 bg-white rounded-xl shadow p-4">
                       <h3 className="font-semibold mb-2 text-[#36A2EB]">월별 예약수/리뷰수</h3>
                       <Bar data={{
-                        labels: (stats.monthlyReservations||[]).map((m:any)=>m.month),
+                        labels: (stats.monthlyReservations||[]).map((m) => m.month),
                         datasets: [
                           {
                             label: '예약수',
-                            data: (stats.monthlyReservations||[]).map((m:any)=>m.count),
+                            data: (stats.monthlyReservations||[]).map((m) => m.count),
                             backgroundColor: '#36A2EB',
                           },
                           {
                             label: '리뷰수',
-                            data: (stats.monthlyReviews||[]).map((m:any)=>m.count),
+                            data: (stats.monthlyReviews||[]).map((m) => m.count),
                             backgroundColor: '#FFCE56',
                           },
                         ],
@@ -186,11 +193,11 @@ export default function HospitalAdminDashboard() {
                     <div className="mb-8 bg-white rounded-xl shadow p-4">
                       <h3 className="font-semibold mb-2 text-[#4BC0C0]">월별 평균 평점</h3>
                       <Line data={{
-                        labels: (stats.monthlyReviews||[]).map((m:any)=>m.month),
+                        labels: (stats.monthlyReviews||[]).map((m) => m.month),
                         datasets: [
                           {
                             label: '평균 평점',
-                            data: (stats.monthlyReviews||[]).map((m:any)=>m.avgRating ? Number(m.avgRating) : null),
+                            data: (stats.monthlyReviews||[]).map((m) => m.avgRating ? Number(m.avgRating) : null),
                             borderColor: '#4BC0C0',
                             backgroundColor: 'rgba(75,192,192,0.2)',
                             tension: 0.3,

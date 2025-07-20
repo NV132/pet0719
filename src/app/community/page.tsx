@@ -210,7 +210,7 @@ function DetailModal({ post, onClose, onEdit, onDelete, isMine }: { post: Post; 
           if (token) {
             const payload = JSON.parse(atob(token.split(".")[1]));
             setUserId(Number(payload.id));
-            setLiked(!!data.post.likes?.find((l: any) => l.userId === Number(payload.id)));
+            setLiked(!!data.post.likes?.find((l: { userId: number }) => l.userId === Number(payload.id)));
           }
         }
       });
@@ -418,7 +418,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
       {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
       {loading ? <div className="text-gray-400">불러오는 중...</div> : (
         <ul className="divide-y divide-gray-100">
-          {comments.map(c => (
+          {comments.map((c: { id: number; user: { id: number; name: string }; content: string; createdAt: string; childComments?: any[] }) => (
             <li key={c.id} className="py-2">
               <div className="flex gap-2 items-center">
                 <span className="font-semibold text-[#36A2EB]">{c.user.name}</span>
@@ -443,7 +443,7 @@ function CommentList({ postId, userId }: { postId: number; userId: number | null
               )}
               {/* 대댓글 */}
               <div className="ml-4 mt-1">
-                {c.childComments?.map((r: any) => (
+                {c.childComments?.map((r: { id: number; user?: { id: number; name: string }; createdAt: string; content: string; userId?: number }) => (
                   <div key={r.id} className="mb-1">
                     <span className="font-semibold text-[#4BC0C0]">{r.user?.name || "익명"}</span>
                     <span className="text-xs text-gray-400 ml-1">{new Date(r.createdAt).toLocaleString()}</span>

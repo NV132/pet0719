@@ -24,7 +24,7 @@ interface AuditLog {
 const ROLES = ["user", "hospitalAdmin", "admin"];
 const STATUS = ["정상", "정지", "탈퇴"];
 
-function downloadCSV(rows: any[], columns: string[], filename: string) {
+function downloadCSV(rows: Record<string, unknown>[], columns: string[], filename: string) {
   const csv = [columns.join(",")].concat(
     rows.map(row => columns.map(col => `"${(row[col] ?? "").toString().replace(/"/g, '""')}"`).join(","))
   ).join("\r\n");
