@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "@/lib/auth";
@@ -5,9 +7,10 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(req, context) {
   const hospital = await prisma.hospital.findUnique({
-    where: { id: Number(params.id) },
+    where: { id: Number(context.params.id) },
     include: {
       specialties: { include: { specialty: true } },
       veterinarians: { include: { veterinarian: true } },
@@ -27,8 +30,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   return NextResponse.json({ hospital: result });
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PATCH(req, context) {
+  const id = Number(context.params.id);
   const data = await req.json();
   // 인증 및 권한 체크
   const auth = req.headers.get("authorization");
@@ -70,8 +74,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ hospital: result });
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(req, context) {
+  const id = Number(context.params.id);
   // 인증 및 권한 체크
   const auth = req.headers.get("authorization");
   const user = verifyToken(auth || undefined) as JwtPayload | null;
