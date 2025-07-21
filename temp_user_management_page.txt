@@ -41,7 +41,7 @@ function downloadCSV(rows: Record<string, unknown>[], columns: string[], filenam
   URL.revokeObjectURL(url);
 }
 
-export default function UserManagementPage() {
+export default function AdminUserManagementPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // 중복 User 인터페이스 선언 제거
